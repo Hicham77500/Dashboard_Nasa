@@ -49,3 +49,29 @@ Accédez à **http://127.0.0.1:5000/** 🚀
 Ce projet est sous licence **MIT**, ce qui permet une utilisation libre tout en mentionnant les auteurs.
 
 
+# 📂 Structure du projet - Dashboard des Astéroïdes 🚀
+
+Ce projet est organisé pour assurer une séparation claire entre le **Backend (Flask + MongoDB)** et le **Frontend (Bootstrap + JS optionnel)**.
+
+---
+
+## 📁 Arborescence du projet
+```
+/Projet_NASA
+│-- /static              # Fichiers statiques (CSS, JS, images)
+│   ├── /css             # Styles CSS pour le front-end
+│   ├── /js              # Scripts JS (Alpine.js ou Vue.js)
+│   ├── /images          # Images et icônes
+│-- /templates           # Fichiers HTML pour le rendu Flask
+│   ├── index.html       # Page principale affichant les astéroïdes
+│-- /data                # Stockage temporaire des données JSON (optionnel)
+│-- /utils               # Fichiers utilitaires (gestion des requêtes API...)
+│   ├── nasa_api.py      # Fonction pour récupérer les données de l'API NASA
+│   ├── db.py            # Connexion et gestion de MongoDB
+│-- app.py               # Fichier principal pour lancer Flask
+│-- config.py            # Variables de configuration (clé API, MongoDB...)
+│-- requirements.txt     # Liste des dépendances du projet
+│-- README.md            # Documentation du projet
+│-- .gitignore           # Fichiers à exclure du dépôt Git
+```
+
