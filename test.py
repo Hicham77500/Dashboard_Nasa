@@ -1,32 +1,16 @@
+import requests
+import datetime
+from dotenv import load_dotenv
 import os
-from pymongo import MongoClient
-from flask import Flask, jsonify
 
-app = Flask(__name__)
-
-MONGO_URI = os.getenv("MONGO_URI")  # Vérifiez que votre .env est bien chargé
-client = MongoClient(MONGO_URI)
-try:
-    client.admin.command('ping')
-    print("Connexion réussie à MongoDB ! ✅")
-except Exception as e:
-    print(f"Erreur de connexion : {e}")
-
-
-db = client["AsteroidDb"]
-asteroids_collection = db["asteroids"]
-
-# API NASA
+load_dotenv()
 NASA_API_KEY = os.getenv("NASA_API_KEY")
 NASA_API_URL = "https://api.nasa.gov/neo/rest/v1/feed"
 
+start_date = datetime.date.today().strftime("%Y-%m-%d")
+url = f"{NASA_API_URL}?start_date={start_date}&api_key={NASA_API_KEY}"
 
-@app.route("/asteroids", methods=["GET"])
-def get_asteroids():
-    asteroids = list(asteroids_collection.find({}, {"_id": 0}))
-    return jsonify(asteroids)
+response = requests.get(url)
+data = response.json()
 
-
-# Lancer l'application Flask
-if __name__ == "__main__":
-    app.run(debug=True)
+print(f"Nombre total d'astéroïdes récupérés : {sum(len(v) for v in data['near_earth_objects'].values())}")
