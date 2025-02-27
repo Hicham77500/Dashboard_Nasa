@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Asteroid Dashboard</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <!-- Ajouter Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>NASA Asteroid Dashboard</h1>
+        
+        <!-- Boutons de filtre -->
+        <div class="filters">
+            <button onclick="filterAsteroids('closest')">Plus proches de la Terre</button>
+            <button onclick="filterAsteroids('largest')">Plus grands</button>
+            <button onclick="filterAsteroids('dangerous')">Dangereux</button>
+        </div>
+
+        <!-- Tableau pour afficher les astéroïdes -->
+        <table class="table" id="asteroids-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Diamètre (km)</th>
+                    <th>Vitesse (km/s)</th>
+                    <th>Distance (km)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Les données seront insérées ici par JavaScript -->
+            </tbody>
+        </table>
+
+        <!-- Graphiques -->
+        <div class="charts">
+            <div class="chart-container">
+                <h2>Distance des astéroïdes</h2>
+                <canvas id="barChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>Caractéristiques des astéroïdes</h2>
+                <canvas id="radarChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>Distances de Passage Approché</h2>
+                <canvas id="distanceChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>Diamètres des Astéroïdes</h2>
+                <canvas id="diameterChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>Vitesses Relatives</h2>
+                <canvas id="velocityChart"></canvas>
+            </div>
+            
+
+        </div>
+    </div>
+
+    <!-- Boîte modale pour afficher les détails de l'astéroïde -->
+    <div id="asteroidModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Détails de l'astéroïde</h2>
+            <p id="modalContent"></p>
+        </div>
+    </div>
+
+    <script src="/static/js/scripts.js"></script>
+</body>
+</html>

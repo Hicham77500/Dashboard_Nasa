@@ -80,33 +80,6 @@ target/
 profile_default/
 ipython_config.py
 
-# pyenv
-.python-version
-
-# pipenv
-#Pipfile.lock
-
-# UV
-#uv.lock
-
-# poetry
-#poetry.lock
-
-# pdm
-.pdm.toml
-.pdm-python
-.pdm-build/
-
-# PEP 582
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
 # Environments
 .env
 .venv
@@ -141,7 +114,10 @@ dmypy.json
 cython_debug/
 
 # PyCharm
-#.idea/
+.idea/
 
 # PyPI configuration file
 .pypirc
+
+# Jupyter Notebook Files (Ajouté pour planning)
+*.ipynb

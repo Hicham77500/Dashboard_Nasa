@@ -1,17 +1,20 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify, render_template
 from pymongo import MongoClient
 from dotenv import load_dotenv
-import requests
 import os
+import json
+from bson import json_util
+import requests
 import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 
+# Chargement des variables d'environnement
 load_dotenv()
 
 # Initialisation de Flask
 app = Flask(__name__)
 
-# Connexion à MongoDB
+# Connexion à MongoDB via variable d'environnement
 MONGO_URI = os.getenv("MONGO_URI")
 if not MONGO_URI:
     raise ValueError("La variable d'environnement MONGO_URI est manquante")
@@ -20,7 +23,7 @@ client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
 db = client["AsteroidDb"]
 asteroids_collection = db["asteroids"]
 
-# API NASA
+# Clé API NASA
 NASA_API_KEY = os.getenv("NASA_API_KEY")
 NASA_API_URL = "https://api.nasa.gov/neo/rest/v1/feed"
 if not NASA_API_KEY:
@@ -47,7 +50,6 @@ def fetch_asteroids():
                     "is_hazardous": asteroid["is_potentially_hazardous_asteroid"],
                 }
                 if not asteroids_collection.find_one({"id": asteroid["id"]}):
-                    print("Données reçues de l'API :", data)
                     asteroids_collection.insert_one(asteroid_data)
     print("Mise à jour des astéroïdes terminée !")
 
@@ -57,22 +59,38 @@ def fetch_new_asteroids():
     fetch_asteroids()
     return jsonify({"message": "Nouvelles données insérées avec succès !"})
 
-# Route pour récupérer les 3 astéroïdes les plus proches
-@app.route("/closest_asteroids", methods=["GET"])
-def get_closest_asteroids():
-    asteroids = list(asteroids_collection.find({}, {"_id": 0}).sort("distance", 1).limit(3))
-    return jsonify(asteroids)
+# Route pour récupérer les astéroïdes avec filtres
+@app.route('/asteroids', methods=['GET'])
+def get_asteroids():
+    filter_type = request.args.get('filter', 'closest')  # Par défaut : plus proches
 
-# Route pour récupérer les 3 astéroïdes les plus éloignés
-@app.route("/farthest_asteroids", methods=["GET"])
-def get_farthest_asteroids():
-    asteroids = list(asteroids_collection.find({}, {"_id": 0}).sort("distance", -1).limit(3))
-    return jsonify(asteroids)
+    if filter_type == "closest":
+        # Astéroïdes les plus proches
+        pipeline = [{"$sort": {"distance": 1}}, {"$limit": 10}]
+    elif filter_type == "largest":
+        # Astéroïdes les plus grands
+        pipeline = [{"$sort": {"size_max": -1}}, {"$limit": 10}]
+    elif filter_type == "dangerous":
+        # Astéroïdes dangereux (distance < 5M km et vitesse > 10 km/s)
+        pipeline = [
+            {"$match": {"distance": {"$lt": 5000000}, "velocity": {"$gt": 10000}}},
+            {"$limit": 10}
+        ]
+    else:
+        return jsonify({"error": "Filtre invalide"}), 400
+
+    asteroids_data = list(asteroids_collection.aggregate(pipeline))
+    return jsonify(json.loads(json_util.dumps(asteroids_data)))
 
 # Planification du refresh toutes les 30 minutes
 scheduler = BackgroundScheduler()
 scheduler.add_job(fetch_asteroids, "interval", minutes=30)
 scheduler.start()
+
+# Route d'accueil
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 # Lancer l'application Flask
 if __name__ == "__main__":
