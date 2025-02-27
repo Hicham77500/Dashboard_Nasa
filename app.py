@@ -6,7 +6,6 @@ import os
 import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 
-    
 load_dotenv()
 
 # Initialisation de Flask
@@ -17,7 +16,7 @@ MONGO_URI = os.getenv("MONGO_URI")
 if not MONGO_URI:
     raise ValueError("La variable d'environnement MONGO_URI est manquante")
 
-client = MongoClient(MONGO_URI) #tls=True, tlsAllowInvalidCertificates=True
+client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
 db = client["AsteroidDb"]
 asteroids_collection = db["asteroids"]
 
@@ -27,8 +26,7 @@ NASA_API_URL = "https://api.nasa.gov/neo/rest/v1/feed"
 if not NASA_API_KEY:
     raise ValueError("La variable d'environnement NASA_API_KEY est manquante")
 
-# Fonction pour récupérer et stocker les astéroïdes
-
+# Fonction pour récupérer et stocker les nouveaux astéroïdes
 def fetch_asteroids():
     start_date = datetime.date.today().strftime("%Y-%m-%d")
     url = f"{NASA_API_URL}?start_date={start_date}&api_key={NASA_API_KEY}"
@@ -44,26 +42,31 @@ def fetch_asteroids():
                     "date": date,
                     "size_min": asteroid["estimated_diameter"]["meters"]["estimated_diameter_min"],
                     "size_max": asteroid["estimated_diameter"]["meters"]["estimated_diameter_max"],
-                    "velocity": asteroid["close_approach_data"][0]["relative_velocity"]["kilometers_per_hour"],
-                    "distance": asteroid["close_approach_data"][0]["miss_distance"]["kilometers"],
+                    "velocity": float(asteroid["close_approach_data"][0]["relative_velocity"]["kilometers_per_hour"]),
+                    "distance": float(asteroid["close_approach_data"][0]["miss_distance"]["kilometers"]),
                     "is_hazardous": asteroid["is_potentially_hazardous_asteroid"],
                 }
-                # Insérer seulement si l'ID n'existe pas
                 if not asteroids_collection.find_one({"id": asteroid["id"]}):
+                    print("Données reçues de l'API :", data)
                     asteroids_collection.insert_one(asteroid_data)
-
     print("Mise à jour des astéroïdes terminée !")
 
 # Route pour ajouter uniquement les nouvelles données
-@app.route("/fetch_asteroids_once", methods=["GET"])
-def fetch_asteroids_once():
+@app.route("/fetch_new_asteroids", methods=["GET"])
+def fetch_new_asteroids():
     fetch_asteroids()
     return jsonify({"message": "Nouvelles données insérées avec succès !"})
 
-# Route pour récupérer toutes les données
-@app.route("/asteroids", methods=["GET"])
-def get_asteroids():
-    asteroids = list(asteroids_collection.find({}, {"_id": 0}))
+# Route pour récupérer les 3 astéroïdes les plus proches
+@app.route("/closest_asteroids", methods=["GET"])
+def get_closest_asteroids():
+    asteroids = list(asteroids_collection.find({}, {"_id": 0}).sort("distance", 1).limit(3))
+    return jsonify(asteroids)
+
+# Route pour récupérer les 3 astéroïdes les plus éloignés
+@app.route("/farthest_asteroids", methods=["GET"])
+def get_farthest_asteroids():
+    asteroids = list(asteroids_collection.find({}, {"_id": 0}).sort("distance", -1).limit(3))
     return jsonify(asteroids)
 
 # Planification du refresh toutes les 30 minutes
