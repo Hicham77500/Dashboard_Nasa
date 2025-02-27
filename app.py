@@ -8,13 +8,13 @@ import requests
 import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 
-# Chargement des variables d'environnement
+# 🔹 Chargement des variables d'environnement
 load_dotenv()
 
-# Initialisation de Flask
+# 🔹 Initialisation de Flask
 app = Flask(__name__)
 
-# Connexion à MongoDB via variable d'environnement
+# 🔹 Connexion MongoDB via variable d'environnement
 MONGO_URI = os.getenv("MONGO_URI")
 if not MONGO_URI:
     raise ValueError("La variable d'environnement MONGO_URI est manquante")
@@ -23,13 +23,13 @@ client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
 db = client["AsteroidDb"]
 asteroids_collection = db["asteroids"]
 
-# Clé API NASA
+# 🔹 Clé API NASA
 NASA_API_KEY = os.getenv("NASA_API_KEY")
 NASA_API_URL = "https://api.nasa.gov/neo/rest/v1/feed"
 if not NASA_API_KEY:
     raise ValueError("La variable d'environnement NASA_API_KEY est manquante")
 
-# Fonction pour récupérer et stocker les astéroïdes depuis l'API NASA
+# 🔹 Fonction pour récupérer et stocker les astéroïdes depuis l'API NASA
 def fetch_asteroids():
     start_date = datetime.date.today().strftime("%Y-%m-%d")
     url = f"{NASA_API_URL}?start_date={start_date}&api_key={NASA_API_KEY}"
@@ -55,61 +55,42 @@ def fetch_asteroids():
 
         if asteroid_list:
             asteroids_collection.insert_many(asteroid_list)
-            print("Mise à jour des astéroïdes terminée !")
+            print("✅ Mise à jour des astéroïdes terminée !")
 
-# Route pour forcer la récupération de nouvelles données depuis l’API NASA
+# 🔹 Route pour forcer la récupération de nouvelles données
 @app.route("/fetch_new_asteroids", methods=["GET"])
 def fetch_new_asteroids():
     fetch_asteroids()
     return jsonify({"message": "Nouvelles données insérées avec succès !"})
 
-
-
-# Planification du refresh toutes les 30 minutes
+# 🔹 Planification du refresh toutes les 30 minutes
 scheduler = BackgroundScheduler()
 scheduler.add_job(fetch_asteroids, "interval", minutes=30)
 scheduler.start()
 
-@app.route('/asteroids', methods=['GET'])
-def get_asteroids():
-    filter_type = request.args.get('filter', 'closest')  # Par défaut : plus proches
+# 🔹 Route API pour récupérer les astéroïdes et les envoyer au front-end
+@app.route("/api/asteroids", methods=["GET"])
+def get_asteroids_data():
+    """Envoie les données des astéroïdes au front-end pour Chart.js"""
+    filter_type = request.args.get("filter", "closest")
 
     if filter_type == "closest":
-        # Astéroïdes les plus proches
-        pipeline = [
-            {"$sort": {"close_approach_data.miss_distance.kilometers": 1}},
-            {"$limit": 10}
-        ]
+        pipeline = [{"$sort": {"distance": 1}}, {"$limit": 10}]
     elif filter_type == "largest":
-        # Astéroïdes les plus grands
-        pipeline = [
-            {"$sort": {"estimated_diameter.kilometers.estimated_diameter_max": -1}},
-            {"$limit": 10}
-        ]
+        pipeline = [{"$sort": {"size_max": -1}}, {"$limit": 10}]
     elif filter_type == "dangerous":
-        # Astéroïdes dangereux (distance < X et vitesse > Y)
-        pipeline = [
-            {"$match": {
-                "close_approach_data.miss_distance.kilometers": {"$lt": 5000000},
-                "close_approach_data.relative_velocity.kilometers_per_second": {"$gt": 10}
-            }},
-            {"$limit": 10}
-        ]
+        pipeline = [{"$match": {"distance": {"$lt": 5000000}, "velocity": {"$gt": 10000}}}, {"$limit": 10}]
     else:
         return jsonify({"error": "Filtre invalide"}), 400
 
-    asteroids_data = list(db.asteroids.aggregate(pipeline))
-    asteroids_data = json.loads(json_util.dumps(asteroids_data))
-    return jsonify(asteroids_data)
+    asteroids_data = list(asteroids_collection.aggregate(pipeline))
+    return jsonify(json.loads(json_util.dumps(asteroids_data)))
 
-# Route d'accueil
-@app.route('/')
+# 🔹 Route d'accueil pour charger le front-end
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
-
-
-
-# Lancer l'application Flask
+# 🔹 Lancer l'application Flask
 if __name__ == "__main__":
     app.run(debug=True)
