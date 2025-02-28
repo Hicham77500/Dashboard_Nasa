@@ -1,7 +1,7 @@
 import requests
 import datetime
 import time
-from utils.db import connect_to_mongodb
+from db import connect_to_mongodb
 from dotenv import load_dotenv
 import os
 

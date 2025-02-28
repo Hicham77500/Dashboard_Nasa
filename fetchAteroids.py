@@ -1,6 +1,6 @@
 import requests
 import datetime
-from utils.db import connect_to_mongodb, insert_asteroid_data
+from db import connect_to_mongodb, insert_asteroid_data
 from dotenv import load_dotenv
 import os
 

@@ -1,73 +1,25 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NASA Asteroid Dashboard</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <!-- 🌌 En-tête -->
-    <header>
-        <h1>🚀 NASA Asteroid Dashboard</h1>
-        <p>🌍 Suivi des astéroïdes proches de la Terre en temps réel</p>
-    </header>
+{% extends "base.html" %}
 
-    <!-- 🔍 Filtres pour afficher les astéroïdes -->
-    <div class="filters">
-        <button id="filterClosest">🌎 Plus proches</button>
-        <button id="filterLargest">📏 Plus grands</button>
-        <button id="filterDangerous">⚠️ Dangereux</button>
+{% block content %}
+<div class="hero">
+    <h1>🚀 Asteroid Tracker</h1>
+    <p>🌌 Suivi des astéroïdes en temps réel avec la NASA</p>
+    <button onclick="window.location.href='/admin'">🛰️ Gérer les Astéroïdes</button>
+    <label for="dateFilter" style="color: white;">📅 Filtrer par date :</label>
+    <input type="date" id="dateFilter" value="{{ today }}" style="background: black; color: #64ffda; border: 1px solid white;">
+    <button id="filterButton" style="margin-left: 10px; padding: 5px 10px; background: #3A86FF; color: white; border-radius: 5px; cursor: pointer;">🔍 Appliquer</button>
+</div>
+
+<section class="charts">
+    <div class="chart-container">
+        <h2>📡 Distance des astéroïdes</h2>
+        <canvas id="distanceChart"></canvas>
     </div>
-
-    <!-- 📊 Tableau des astéroïdes -->
-    <section class="data-section">
-        <table class="table" id="asteroids-table">
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Diamètre (km)</th>
-                    <th>Vitesse (km/s)</th>
-                    <th>Distance (km)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Données insérées dynamiquement -->
-            </tbody>
-        </table>
-    </section>
-
-    <!-- 📈 Graphiques interactifs -->
-    <section class="charts">
-        <div class="chart-container">
-            <h2>📊 Distance des astéroïdes</h2>
-            <canvas id="barChart"></canvas>
-        </div>
-        <div class="chart-container">
-            <h2>📡 Caractéristiques des astéroïdes</h2>
-            <canvas id="radarChart"></canvas>
-        </div>
-        <div class="chart-container">
-            <h2>🚀 Vitesses Relatives</h2>
-            <canvas id="velocityChart"></canvas>
-        </div>
-        <div class="chart-container">
-            <h2>🪐 Diamètres des Astéroïdes</h2>
-            <canvas id="diameterChart"></canvas>
-        </div>
-    </section>
-
-    <!-- 📜 Modale pour afficher les détails -->
-    <div id="asteroidModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="modalTitle">Détails de l'astéroïde</h2>
-            <p id="modalContent"></p>
-        </div>
+    <div class="chart-container">
+        <h2>⚡ Vitesse des astéroïdes</h2>
+        <canvas id="velocityChart"></canvas>
     </div>
+</section>
 
-    <!-- 🛠 Script -->
-    <script src="/static/js/scripts.js"></script>
-</body>
-</html>
+<script src="/static/js/scripts.js" defer></script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header>
+    <h1>🌠 Gestion des Astéroïdes</h1>
+    <p>📊 Ajoutez, modifiez et supprimez des astéroïdes</p>
+    <p id="lastUpdate">📅 Dernière mise à jour : --</p>
+</header>
+
+<div class="card-container">
+    <div class="card">
+        <h2>➕ Ajouter un astéroïde</h2>
+        <form id="addAsteroidForm">
+            <input type="text" name="name" placeholder="Nom" required>
+            <input type="number" name="size_max" placeholder="Diamètre Max (km)" required>
+            <input type="number" name="velocity" placeholder="Vitesse (km/s)" required>
+            <input type="number" name="distance" placeholder="Distance (km)" required>
+            <button type="submit">Ajouter</button>
+        </form>
+    </div>
+
+    <div class="card-container">
+        <div class="card">
+            <h2>🔍 Rechercher un astéroïde</h2>
+            <div class="search-container">
+                <input type="text" id="searchAsteroid" placeholder="Entrez un nom..." required>
+                <button id="searchButton">🔎 Entrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="table-container">
+    <h2>🌍 Liste des Astéroïdes</h2>
+    <button id="filterLast7Days" class="filter-btn">📅 Afficher les astéroïdes proches (7 derniers jours)</button>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Diamètre (km)</th>
+                <th>Vitesse (km/s)</th>
+                <th>Distance (km)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="asteroidTable"></tbody>
+    </table>
+    <div id="pagination" style="margin-top: 20px;"></div>
+</section>
+
+<script src="/static/js/admin.js"></script>
+{% endblock %}

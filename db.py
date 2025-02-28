@@ -9,6 +9,8 @@ MONGO_URI = os.getenv("MONGO_URI")
 if not MONGO_URI:
     raise ValueError("La variable d'environnement MONGO_URI est manquante")
 
+client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True) 
+
 def connect_to_mongodb(db_name):
     client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
     return client[db_name]

@@ -1,0 +1,213 @@
+/* 🌌 Arrière-plan */
+body {
+    background: url("/static/img/galaxy.png") no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+}
+
+/* 🚀 En-tête */
+header {
+    padding-top: 80px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.8);
+}
+h1 {
+    font-size: 28px;
+    text-transform: uppercase;
+    color: #64ffda;
+}
+p {
+    color: #8892b0;
+}
+
+/* 🛰 Formulaire */
+.form-container {
+    margin: 20px auto;
+    padding: 15px;
+    width: 40%;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+}
+
+/* 🌌 Uniformisation des champs de saisie */
+input {
+    width: 100%;
+    max-width: 250px;
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #64ffda;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 16px;
+}
+
+input:focus {
+    outline: none;
+    background: rgba(0, 255, 234, 0.1);
+    box-shadow: 0 0 10px rgba(100, 255, 218, 0.8);
+}
+
+/* 📌 Bouton Entrer pour la recherche */
+#searchButton {
+    padding: 10px 15px;
+    background: #3A86FF;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+#searchButton:hover {
+    background: #ff006e;
+    box-shadow: 0 0 10px rgba(255, 0, 110, 0.8);
+}
+
+button {
+    background: #3A86FF;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background: #ff006e;
+}
+
+/* 📊 Tableau */
+.table-container {
+    margin: 20px auto;
+    width: 80%;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid white;
+}
+th {
+    background: rgba(0, 0, 0, 0.7);
+}
+tr:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+button.delete {
+    background: red;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+#pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.page-btn {
+    background: #3A86FF;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.page-btn:hover {
+    background: #ff006e;
+}
+
+.page-btn.active {
+    background: #8338EC;
+    font-weight: bold;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+    text-align: center;
+    width: 350px;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+#searchButton {
+    background: #3A86FF;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#searchButton:hover {
+    background: #ff006e;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+    text-align: center;
+    width: 350px;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+#searchButton {
+    background: #3A86FF;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#searchButton:hover {
+    background: #ff006e;
+}
+.filter-btn {
+    background: #ffcc00;
+    color: black;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+.filter-btn:hover {
+    background: #ffaa00;
+}

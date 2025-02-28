@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroid Tracker</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <nav>
+        <a href="/">🏠 Accueil</a>
+        <a href="/admin">🛰️ Administration</a>
+    </nav>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <p>🚀<span id="lastUpdateFooter">--</span></p>
+    <p>🌟 Projet développé par <strong>Hicham Guendouz</strong>, <strong>Ilyas Maalal</strong> et <strong>Boussad Ait Djoudi Oufella</strong></p>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const lastUpdateElement = document.getElementById("lastUpdate");
+        const lastUpdateFooter = document.getElementById("lastUpdateFooter");
+        const nextUpdateTimer = document.getElementById("nextUpdateTimer");
+
+        // Charger la date de la dernière mise à jour
+        let lastUpdateTime = localStorage.getItem("lastUpdate");
+        if (lastUpdateTime) {
+            lastUpdateFooter.innerHTML = `📅 ${lastUpdateTime}`;
+        } else {
+            lastUpdateFooter.innerHTML = "📅 Aucune mise à jour récente.";
+        }
+
+        // Calcul de la prochaine mise à jour (toutes les 24h après la dernière)
+        function calculateNextUpdate() {
+            if (lastUpdateTime) {
+                let lastUpdateDate = new Date(lastUpdateTime);
+                let nextUpdateDate = new Date(lastUpdateDate);
+                nextUpdateDate.setHours(nextUpdateDate.getHours() + 24);
+
+                function updateTimer() {
+                    let now = new Date();
+                    let timeDiff = nextUpdateDate - now;
+
+                    if (timeDiff <= 0) {
+                        nextUpdateTimer.innerHTML = "📡 Mise à jour en cours...";
+                    } else {
+                        let hours = Math.floor(timeDiff / (1000 * 60 * 60));
+                        let minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                        let seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+                        nextUpdateTimer.innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
+                    }
+                }
+
+                updateTimer();
+                setInterval(updateTimer, 1000); // Mettre à jour chaque seconde
+            } else {
+                nextUpdateTimer.innerHTML = "📡 En attente de la première mise à jour...";
+            }
+        }
+
+        calculateNextUpdate();
+    });
+</script>
+
+</body>
+</html>
