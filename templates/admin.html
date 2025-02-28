@@ -5,6 +5,7 @@
     <h1>🌠 Gestion des Astéroïdes</h1>
     <p>📊 Ajoutez, modifiez et supprimez des astéroïdes</p>
     <p id="lastUpdate">📅 Dernière mise à jour : --</p>
+    <p id="nextUpdateTimer">⏳ En attente de la première mise à jour...</p>
 </header>
 
 <div class="card-container">
@@ -48,5 +49,5 @@
     <div id="pagination" style="margin-top: 20px;"></div>
 </section>
 
-<script src="/static/js/admin.js"></script>
+<script src="/static/js/admin.js?v={{ timestamp }}"></script>
 {% endblock %}
